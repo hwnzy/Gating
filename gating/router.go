@@ -1,3 +1,10 @@
+package gating
+
+import (
+	"log"
+	"net/http"
+)
+
 type router struct {
 	handlers map[string]HandlerFunc
 }
