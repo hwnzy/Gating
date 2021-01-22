@@ -8,6 +8,7 @@ import (
 
 func main() {
 	r := gating.New()
+	r.Use(gating.Logger())
 	r.GET("/index", func(c *gating.Context){
 		c.HTML(http.StatusOK, "<h1>Index Page</h1>")
 	})
