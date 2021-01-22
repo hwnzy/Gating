@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+	"log"
+	"time"
 
 	"gating"
 )
@@ -23,6 +25,12 @@ func main() {
 		})
 	}
 	v2 := r.Group("/v2")
+	v2.Use(func(c *gating.Context) {
+		t := time.Now()
+		c.Fail(500, "Internal Server Error")
+		// Calculate resolution time
+		log.Printf("[%d] %s in %v for group v2", c.StatusCode, c.Req.RequestURI, time.Since(t))
+	})
 	{
 		v2.GET("/hello/:name", func(c *gating.Context){
 			// expect /hello/hwnzy
