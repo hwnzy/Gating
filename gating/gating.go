@@ -4,6 +4,7 @@ import (
 	"log"
 	"strings"
 	"net/http"
+	"html/template"
 	"path"
 )
 
@@ -22,6 +23,8 @@ type (
 		*RouterGroup
 		router *router
 		groups []*RouterGroup // store all groups
+		htmlTemplates *template.Template
+		funcMap template.FuncMap
 	}
 )
 
@@ -97,6 +100,13 @@ func (group *RouterGroup) Static(relativePath string, root string) {
 	log.Printf("relativePath: %s, root: %s, urlPattern: %s", relativePath, root, urlPattern)
 }
 
+func (engine *Engine) SetFuncMap(funcMap template.FuncMap) {
+	engine.funcMap = funcMap
+}
+
+func (engine *Engine) LoadHTMLGlob(pattern string) {
+	engine.htmlTemplates = template.Must(template.New("").Funcs(engine.funcMap).ParseGlob(pattern))
+}
 
 //Run defines the method to start a http server
 func (engine *Engine) Run(add string)(err error){
@@ -112,5 +122,6 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request){
 	}
 	c := newContext(w, req)
 	c.handlers = middlewares
+	c.engine = engine
 	engine.router.handle(c)
 }
