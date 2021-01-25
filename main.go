@@ -21,9 +21,17 @@ func FormatAsDate(t time.Time) string {
 }
 
 func main() {
-	r := gating.New()
-	r.Use(gating.Logger())
+	r := gating.Default()
+	r.GET("/", func(c *gating.Context) {
+		c.String(http.StatusOK, "Hello hwnzy\n")
+	})
 	
+	// index out of range for testing Recovery()
+	r.GET("/panic", func(c *gating.Context) {
+		names := []string{"hwnzy"}
+		c.String(http.StatusOK, names[100])
+	})
+
 	r.SetFuncMap(template.FuncMap{
 		"FormatAsDate": FormatAsDate,
 	})
