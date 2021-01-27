@@ -36,7 +36,7 @@ func main() {
 		"FormatAsDate": FormatAsDate,
 	})
 	r.LoadHTMLGlob("templates/*")
-	r.Static("/assets", "/home/hwnzy/Gating/static")
+	r.Static("/assets", "/home/hwnzy/Gating/web/static")
 	// r.GET("/index", func(c *gating.Context){
 	// 	c.HTML(http.StatusOK, "<h1>Index Page</h1>")
 	// })
