@@ -30,7 +30,7 @@ func TestGet(t *testing.T) {
 		func(key string) ([]byte, error) {
 			log.Println("[slowDB] search key", key)
 			if v, ok := db[key]; ok {
-				if _, ok := loadCounts[key]; ok {
+				if _, ok := loadCounts[key]; !ok {
 					loadCounts[key] = 0
 				}
 				loadCounts[key]++
