@@ -5,6 +5,7 @@ import (
 	"log"
 	"sync"
 	"gatingcache/singleflight"
+	pb "gatingcache/gatingcachepb"
 )
 
 // A Group is a cache namespace and associated data loaded spread over
@@ -98,11 +99,22 @@ func (g *Group) load(key string) (value ByteView, err error) {
 }
 
 func (g *Group) getFromPeer(peer PeerGetter, key string) (ByteView, error) {
-	bytes, err := peer.Get(g.name, key)
+	
+	req := &pb.Request{
+		Group: g.name,
+		Key: key,
+	}
+	res := &pb.Response{}
+	err := peer.Get(req, res)
 	if err != nil {
 		return ByteView{}, err
 	}
-	return ByteView{b:bytes}, nil
+	return ByteView{b: res.Value}, nil
+	// bytes, err := peer.Get(g.name, key)
+	// if err != nil {
+	// 	return ByteView{}, err
+	// }
+	// return ByteView{b:bytes}, nil
 }
 
 func (g *Group) getLocally(key string) (ByteView, error) {
